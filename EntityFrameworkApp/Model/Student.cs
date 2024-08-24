@@ -9,6 +9,7 @@ namespace EntityFrameworkApp.Model
 {
     public class Student
     {
+        [Key]
         public int IdStudent { get; set; }
 
         [MaxLength(50)]
