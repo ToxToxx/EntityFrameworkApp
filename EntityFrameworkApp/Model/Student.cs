@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace EntityFrameworkApp.Model
 
         [MaxLength(50)]
         public string LastName { get; set; }
-
-        public int Address { get; set; }
+        [ForeignKey("IdAddress")]
+        public Address AddressObject { get; set; }
     }
 }   
