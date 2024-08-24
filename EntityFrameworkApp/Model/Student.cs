@@ -21,7 +21,9 @@ namespace EntityFrameworkApp.Model
 
         [MaxLength(50)]
         public string LastName { get; set; }
-        [ForeignKey("IdAddress")]
+        public int AddressId { get; set; }
+
+        [ForeignKey("AddressId")]
         public Address AddressObject { get; set; }
     }
 }   
