@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkApp.Repositories
 {
-    internal interface IStudent
+    public interface IStudent
     {
         IEnumerable<Student> GetAll();
         Student GetById(int id);
