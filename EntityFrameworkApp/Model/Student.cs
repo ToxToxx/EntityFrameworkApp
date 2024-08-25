@@ -14,13 +14,13 @@ namespace EntityFrameworkApp.Model
         public int IdStudent { get; set; }
 
         [MaxLength(50)]
-        public string Name { get; set; }
+        public string LastName { get; set; }
 
         [MaxLength (50)]
         public string FirstName { get; set; }
 
         [MaxLength(50)]
-        public string LastName { get; set; }
+        public string Patronymic { get; set; }
         public int AddressId { get; set; }
 
         [ForeignKey("AddressId")]
