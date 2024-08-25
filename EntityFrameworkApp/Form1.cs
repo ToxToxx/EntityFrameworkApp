@@ -75,25 +75,61 @@ namespace EntityFrameworkApp
 
         private void guna2Button2_Click(object sender, EventArgs e)
         {
-            if(guna2DataGridView1.SelectedRows.Count > 0)
+            if (!ValidationStudent())
             {
-                var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
+                MessageBox.Show("Персональные данные не могут быть пустыми.", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var selectedRow = guna2DataGridView1.SelectedRows[0];
+            int studentId = (int)selectedRow.Cells["IdStudent"].Value;
+
+            var student = _studentImplementation.GetById(studentId);
+
+            if (student != null)
+            {
                 student.LastName = LastName.Text;
                 student.FirstName = FirstName.Text;
                 student.Patronymic = Patronymic.Text;
+                
+                if(student.AddressObject == null)
+                {
+                    student.AddressObject = new Address();
+                }
+
+                student.AddressObject.Name = AddressName.Text;
+                student.AddressObject.City = AddressCity.Text;
+                student.AddressObject.State = AddressState.Text;
+                student.AddressObject.ZipCode = AddressZipCode.Text;
+
                 _studentImplementation.Update(student);
+
                 LoadStudents();
             }
         }
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
-            if(guna2DataGridView1.SelectedRows.Count > 0)
+            if (guna2DataGridView1.SelectedRows.Count > 0)
             {
                 var selectedRow = guna2DataGridView1.SelectedRows[0];
-                LastName.Text = selectedRow.Cells["LastName"].Value.ToString();
-                FirstName.Text = selectedRow.Cells["FirstName"].Value.ToString();
-                Patronymic.Text = selectedRow.Cells["Patronymic"].Value.ToString();
+                int studentId = (int)selectedRow.Cells["IdStudent"].Value;
+
+                var student = _studentImplementation.GetById(studentId);
+
+                if (student != null)
+                {
+                    LastName.Text = student.LastName;
+                    FirstName.Text = student.FirstName;
+                    Patronymic.Text = student.Patronymic;
+
+                    if (student.AddressObject != null)
+                    {
+                        AddressName.Text = student.AddressObject.Name;
+                        AddressCity.Text = student.AddressObject.City;
+                        AddressState.Text = student.AddressObject.State;
+                        AddressZipCode.Text = student.AddressObject.ZipCode;
+                    }
+                }
             }
         }
 
@@ -104,12 +140,17 @@ namespace EntityFrameworkApp
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            if(guna2DataGridView1.SelectedRows.Count > 0)
+            if (guna2DataGridView1.SelectedRows.Count > 0)
             {
                 var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
                 _studentImplementation.Delete(student.IdStudent);
                 LoadStudents();
             }
+        }
+
+        private bool ValidationStudent()
+        {
+            return new[] { LastName.Text, FirstName.Text, Patronymic.Text }.All(text => !string.IsNullOrEmpty(text));
         }
     }
 }
