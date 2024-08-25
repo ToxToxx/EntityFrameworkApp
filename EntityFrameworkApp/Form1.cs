@@ -1,4 +1,5 @@
 ﻿using EntityFrameworkApp.Data;
+using EntityFrameworkApp.Model;
 using EntityFrameworkApp.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -32,6 +33,20 @@ namespace EntityFrameworkApp
         {
             var students = _studentRepository.GetAll();
             guna2DataGridView1.DataSource = students.ToList();
+        }
+
+        private void guna2Button1_Click(object sender, EventArgs e)
+        {
+            var student = new Student
+            {
+                LastName = LastName.Text,
+                FirstName = FirstName.Text,
+                Patronymic = Patronymic.Text,
+                AddressId = int Parse(AddressId.Text)
+            };
+            _studentRepository.Add(student);
+            LoadStudents();
+            
         }
     }
 }
