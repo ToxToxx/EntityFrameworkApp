@@ -42,7 +42,7 @@ namespace EntityFrameworkApp
                 LastName = LastName.Text,
                 FirstName = FirstName.Text,
                 Patronymic = Patronymic.Text,
-                AddressId = int Parse(AddressId.Text)
+                AddressId = int.Parse(AddressId.Text)
             };
             _studentRepository.Add(student);
             LoadStudents();
