@@ -26,13 +26,27 @@ namespace EntityFrameworkApp
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            LoadStudents();
         }
 
         private void LoadStudents()
         {
-            var students = _studentRepository.GetAll();
-            guna2DataGridView1.DataSource = students.ToList();
+            try
+            {
+                var students = _studentRepository.GetAll();
+                if (students.Any())
+                {
+                    guna2DataGridView1.DataSource = students.ToList();
+                }
+                else
+                {
+                    MessageBox.Show("No students found in the database.");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error loading students: {ex.Message}");
+            }
         }
 
         private void guna2Button1_Click(object sender, EventArgs e)
@@ -46,7 +60,37 @@ namespace EntityFrameworkApp
             };
             _studentRepository.Add(student);
             LoadStudents();
-            
+        }
+
+        private void guna2Button2_Click(object sender, EventArgs e)
+        {
+            if(guna2DataGridView1.SelectedRows.Count > 0)
+            {
+                var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
+                student.LastName = LastName.Text;
+                student.FirstName = FirstName.Text;
+                student.Patronymic = Patronymic.Text;
+                student.AddressId = int.Parse(AddressId.Text);
+                _studentRepository.Update(student);
+                LoadStudents();
+            }
+        }
+
+        private void guna2Button3_Click(object sender, EventArgs e)
+        {
+            if(guna2DataGridView1.SelectedRows.Count > 0)
+            {
+                var selectedRow = guna2DataGridView1.SelectedRows[0];
+                LastName.Text = selectedRow.Cells["LastName"].Value.ToString();
+                FirstName.Text = selectedRow.Cells["FirstName"].Value.ToString();
+                Patronymic.Text = selectedRow.Cells["Patronymic"].Value.ToString();
+                AddressId.Text = selectedRow.Cells["AddressId"].Value.ToString();
+            }
+        }
+
+        private void guna2Button4_Click(object sender, EventArgs e)
+        {
+            LoadStudents();
         }
     }
 }
