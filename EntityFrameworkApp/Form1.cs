@@ -1,4 +1,5 @@
 ﻿using EntityFrameworkApp.Data;
+using EntityFrameworkApp.Interfaces;
 using EntityFrameworkApp.Model;
 using EntityFrameworkApp.Repositories;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,12 +17,15 @@ namespace EntityFrameworkApp
 {
     public partial class Form1 : Form
     {
-        private readonly IStudent _studentRepository;
+        private readonly IStudent _studentImplementation;
+        private readonly IAddress _addressImplementation;
+
         public Form1()
         {
             InitializeComponent();
             var serviceProvider = ServiceProviderFactory.ServiceProvider;
-            _studentRepository = serviceProvider.GetService<IStudent>();
+            _studentImplementation = serviceProvider.GetService<IStudent>();
+            _addressImplementation = serviceProvider.GetService<IAddress>();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -31,7 +35,7 @@ namespace EntityFrameworkApp
 
         private void LoadStudents()
         {
-            var students = _studentRepository.GetAll();
+            var students = _studentImplementation.GetAll();
             var studentViewModels = students.Select(s => new
             {
                 s.IdStudent,
@@ -49,14 +53,23 @@ namespace EntityFrameworkApp
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
+            var address = new Address
+            {
+                Name = AddressName.Text,
+                City = AddressCity.Text,
+                State = AddressState.Text,
+                ZipCode = AddressZipCode.Text,
+            };
+            _addressImplementation.Add(address);
+
             var student = new Student
             {
                 LastName = LastName.Text,
                 FirstName = FirstName.Text,
                 Patronymic = Patronymic.Text,
-                AddressId = int.Parse(AddressId.Text)
+                AddressId = address.IdAddress
             };
-            _studentRepository.Add(student);
+            _studentImplementation.Add(student);
             LoadStudents();
         }
 
@@ -68,8 +81,7 @@ namespace EntityFrameworkApp
                 student.LastName = LastName.Text;
                 student.FirstName = FirstName.Text;
                 student.Patronymic = Patronymic.Text;
-                student.AddressId = int.Parse(AddressId.Text);
-                _studentRepository.Update(student);
+                _studentImplementation.Update(student);
                 LoadStudents();
             }
         }
@@ -82,7 +94,6 @@ namespace EntityFrameworkApp
                 LastName.Text = selectedRow.Cells["LastName"].Value.ToString();
                 FirstName.Text = selectedRow.Cells["FirstName"].Value.ToString();
                 Patronymic.Text = selectedRow.Cells["Patronymic"].Value.ToString();
-                AddressId.Text = selectedRow.Cells["AddressId"].Value.ToString();
             }
         }
 
@@ -96,7 +107,7 @@ namespace EntityFrameworkApp
             if(guna2DataGridView1.SelectedRows.Count > 0)
             {
                 var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
-                _studentRepository.Delete(student.IdStudent);
+                _studentImplementation.Delete(student.IdStudent);
                 LoadStudents();
             }
         }
