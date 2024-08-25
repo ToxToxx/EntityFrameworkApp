@@ -4,6 +4,7 @@ using EntityFrameworkApp.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -30,6 +31,13 @@ namespace EntityFrameworkApp.Implementations
 
         public void Add(Student student)
         {
+            // Ensure the Address exists before adding the student
+            var address = _context.Addresses.Find(student.AddressId);
+            if (address == null)
+            {
+                // Address not found, handle this scenario.
+                throw new InvalidOperationException("The specified AddressId does not exist.");
+            }
             _context.Students.Add(student);
             _context.SaveChanges();
         }
