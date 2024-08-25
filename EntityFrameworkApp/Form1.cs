@@ -31,22 +31,20 @@ namespace EntityFrameworkApp
 
         private void LoadStudents()
         {
-            try
+            var students = _studentRepository.GetAll();
+            var studentViewModels = students.Select(s => new
             {
-                var students = _studentRepository.GetAll();
-                if (students.Any())
-                {
-                    guna2DataGridView1.DataSource = students.ToList();
-                }
-                else
-                {
-                    MessageBox.Show("No students found in the database.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error loading students: {ex.Message}");
-            }
+                s.IdStudent,
+                s.LastName,
+                s.FirstName,
+                s.Patronymic,
+                Street = (s.AddressObject?.Name ?? "") + " " +
+                (s.AddressObject?.City ?? "") + " " +
+                (s.AddressObject?.State ?? "") + " " +
+                (s.AddressObject?.ZipCode ?? "")
+            }).ToList();
+
+            guna2DataGridView1.DataSource = studentViewModels.ToList();
         }
 
         private void guna2Button1_Click(object sender, EventArgs e)
@@ -91,6 +89,16 @@ namespace EntityFrameworkApp
         private void guna2Button4_Click(object sender, EventArgs e)
         {
             LoadStudents();
+        }
+
+        private void guna2Button5_Click(object sender, EventArgs e)
+        {
+            if(guna2DataGridView1.SelectedRows.Count > 0)
+            {
+                var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
+                _studentRepository.Delete(student.IdStudent);
+                LoadStudents();
+            }
         }
     }
 }
