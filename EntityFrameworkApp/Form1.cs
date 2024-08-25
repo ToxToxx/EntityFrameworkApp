@@ -38,7 +38,7 @@ namespace EntityFrameworkApp
                 s.LastName,
                 s.FirstName,
                 s.Patronymic,
-                Street = (s.AddressObject?.Name ?? "") + " " +
+                FullAddress = (s.AddressObject?.Name ?? "") + " " +
                 (s.AddressObject?.City ?? "") + " " +
                 (s.AddressObject?.State ?? "") + " " +
                 (s.AddressObject?.ZipCode ?? "")

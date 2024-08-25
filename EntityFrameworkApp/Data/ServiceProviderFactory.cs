@@ -5,6 +5,7 @@ using System.Security.Authentication.ExtendedProtection;
 using System.Text;
 using System.Threading.Tasks;
 using EntityFrameworkApp.Implementations;
+using EntityFrameworkApp.Interfaces;
 using EntityFrameworkApp.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,7 +19,8 @@ namespace EntityFrameworkApp.Data
         {
             var services = new ServiceCollection();
             services.AddScoped<DataContext>();
-            services.AddScoped<IStudent, StudentRepository>();
+            services.AddScoped<IStudent, StudentImplement>();
+            services.AddScoped<IAddress, AddressImplement>();
             ServiceProvider = services.BuildServiceProvider();
         }
     }

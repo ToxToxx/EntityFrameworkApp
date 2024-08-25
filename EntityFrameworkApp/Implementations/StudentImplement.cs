@@ -8,18 +8,17 @@ using System.Linq;
 
 namespace EntityFrameworkApp.Implementations
 {
-    public class StudentRepository : IStudent
+    public class StudentImplement : IStudent
     {
         private readonly DataContext _context;
 
-        public StudentRepository(DataContext context)
+        public StudentImplement(DataContext context)
         {
             _context = context;
         }
 
         public IEnumerable<Student> GetAll()
         {
-            // Eagerly load the AddressObject
             return _context.Students.Include(s => s.AddressObject).ToList();
         }
 
