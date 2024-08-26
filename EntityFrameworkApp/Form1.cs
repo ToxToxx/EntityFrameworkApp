@@ -2,6 +2,7 @@
 using EntityFrameworkApp.Interfaces;
 using EntityFrameworkApp.Model;
 using EntityFrameworkApp.Repositories;
+using Guna.UI2.WinForms;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Data;
@@ -48,6 +49,11 @@ namespace EntityFrameworkApp
 
         private void guna2Button1_Click(object sender, EventArgs e)
         {
+            if (!ValidationStudent())
+            {
+                MessageBox.Show("Personal Data cannot be empty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
             var address = new Address
             {
                 Name = AddressName.Text,
@@ -72,7 +78,7 @@ namespace EntityFrameworkApp
         {
             if (!ValidationStudent())
             {
-                MessageBox.Show("Персональные данные не могут быть пустыми.", "Уведомление", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Personal Data cannot be empty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             var selectedRow = guna2DataGridView1.SelectedRows[0];
@@ -85,8 +91,8 @@ namespace EntityFrameworkApp
                 student.LastName = LastName.Text;
                 student.FirstName = FirstName.Text;
                 student.Patronymic = Patronymic.Text;
-                
-                if(student.AddressObject == null)
+
+                if (student.AddressObject == null)
                 {
                     student.AddressObject = new Address();
                 }
@@ -104,26 +110,28 @@ namespace EntityFrameworkApp
 
         private void guna2Button3_Click(object sender, EventArgs e)
         {
-            if (guna2DataGridView1.SelectedRows.Count > 0)
+            if (!ValidationSelectRow())
             {
-                var selectedRow = guna2DataGridView1.SelectedRows[0];
-                int studentId = (int)selectedRow.Cells["IdStudent"].Value;
+                MessageBox.Show("You must choose note first", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var selectedRow = guna2DataGridView1.SelectedRows[0];
+            int studentId = (int)selectedRow.Cells["IdStudent"].Value;
 
-                var student = _studentImplementation.GetById(studentId);
+            var student = _studentImplementation.GetById(studentId);
 
-                if (student != null)
+            if (student != null)
+            {
+                LastName.Text = student.LastName;
+                FirstName.Text = student.FirstName;
+                Patronymic.Text = student.Patronymic;
+
+                if (student.AddressObject != null)
                 {
-                    LastName.Text = student.LastName;
-                    FirstName.Text = student.FirstName;
-                    Patronymic.Text = student.Patronymic;
-
-                    if (student.AddressObject != null)
-                    {
-                        AddressName.Text = student.AddressObject.Name;
-                        AddressCity.Text = student.AddressObject.City;
-                        AddressState.Text = student.AddressObject.State;
-                        AddressZipCode.Text = student.AddressObject.ZipCode;
-                    }
+                    AddressName.Text = student.AddressObject.Name;
+                    AddressCity.Text = student.AddressObject.City;
+                    AddressState.Text = student.AddressObject.State;
+                    AddressZipCode.Text = student.AddressObject.ZipCode;
                 }
             }
         }
@@ -135,34 +143,49 @@ namespace EntityFrameworkApp
 
         private void guna2Button5_Click(object sender, EventArgs e)
         {
-            if (guna2DataGridView1.SelectedRows.Count > 0)
+            if (!ValidationSelectRow())
             {
-                var selectedRow = guna2DataGridView1.SelectedRows[0];
-                int studentId = (int)selectedRow.Cells["IdStudent"].Value;
+                MessageBox.Show("You must choose note first", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var selectedRow = guna2DataGridView1.SelectedRows[0];
+            int studentId = (int)selectedRow.Cells["IdStudent"].Value;
 
-                var student = _studentImplementation.GetById(studentId);
+            var student = _studentImplementation.GetById(studentId);
 
-                if(student != null)
+            if (student != null)
+            {
+                if (student.AddressObject != null)
                 {
-                    if(student.AddressObject != null)
-                    {
-                        _addressImplementation.Delete(student.AddressObject.IdAddress);
-                    }
-                    _studentImplementation.Delete(student.IdStudent);
-
-                    LoadStudents();
+                    _addressImplementation.Delete(student.AddressObject.IdAddress);
                 }
+                _studentImplementation.Delete(student.IdStudent);
+
+                LoadStudents();
             }
         }
 
         private bool ValidationStudent()
         {
-            if(string.IsNullOrEmpty(LastName.Text) || string.IsNullOrEmpty(FirstName.Text) || string.IsNullOrEmpty(Patronymic.Text))
+            if (string.IsNullOrEmpty(LastName.Text) || string.IsNullOrEmpty(FirstName.Text) || string.IsNullOrEmpty(Patronymic.Text))
             {
-                MessageBox.Show("Data cannot be empty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return false;
             }
             return true;
+        }
+
+        private bool ValidationSelectRow()
+        {
+            if (guna2DataGridView1.SelectedRows.Count < 0)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private void guna2DataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            LastName.Text = string.Empty;
         }
     }
 }
