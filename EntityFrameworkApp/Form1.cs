@@ -221,5 +221,26 @@ namespace EntityFrameworkApp
             _studentImplementation.CreateStudentStorage(student, address);
             LoadStudents();
         }
+
+        private void guna2Button7_Click(object sender, EventArgs e)
+        {
+            var searchResults = _studentImplementation.SearchStudents(SearchValue.Text);
+
+            var studentViewModels = searchResults.Select(s => new StudentViewModel
+            {
+                IdStudent = s.IdStudent,
+                LastName = s.LastName,
+                FirstName = s.FirstName,
+                Patronymic = s.Patronymic,
+                FullAddress = s.AddressObject
+                == null ? "No address"
+                : $"{s.AddressObject.Name ?? "No address name"} " +
+                $"{s.AddressObject.City ?? "No city"} " +
+                $"{s.AddressObject.State ?? "No state"} " +
+                $"{s.AddressObject.ZipCode ?? "No zipcode"}"
+            }).ToList();
+
+            guna2DataGridView1.DataSource = studentViewModels;
+        }
     }
 }
