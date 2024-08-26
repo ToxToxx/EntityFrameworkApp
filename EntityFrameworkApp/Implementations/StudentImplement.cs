@@ -53,5 +53,11 @@ namespace EntityFrameworkApp.Implementations
                 _context.SaveChanges();
             }
         }
+
+        public void CreateStudentStorage(Student student, Address address)
+        {
+            _context.CreateStudent(student, address);
+            _context.SaveChanges();
+        }
     }
 }
