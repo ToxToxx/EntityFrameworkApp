@@ -2,6 +2,7 @@
 using EntityFrameworkApp.Interfaces;
 using EntityFrameworkApp.Model;
 using EntityFrameworkApp.Repositories;
+using EntityFrameworkApp.ViewModel;
 using Guna.UI2.WinForms;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -32,16 +33,18 @@ namespace EntityFrameworkApp
         private void LoadStudents()
         {
             var students = _studentImplementation.GetAll();
-            var studentViewModels = students.Select(s => new
+            var studentViewModels = students.Select(s => new StudentViewModel
             {
-                s.IdStudent,
-                s.LastName,
-                s.FirstName,
-                s.Patronymic,
-                FullAddress = (s.AddressObject?.Name ?? "") + " " +
-                (s.AddressObject?.City ?? "") + " " +
-                (s.AddressObject?.State ?? "") + " " +
-                (s.AddressObject?.ZipCode ?? "")
+                IdStudent = s.IdStudent,
+                LastName = s.LastName,
+                FirstName = s.FirstName,
+                Patronymic = s.Patronymic,
+                FullAddress = s.AddressObject 
+                == null ? string.Empty
+                : $"{s.AddressObject.Name} " +
+                $"{s.AddressObject.City} " +
+                $"{s.AddressObject.State} " +
+                $"{s.AddressObject.ZipCode}"
             }).ToList();
 
             guna2DataGridView1.DataSource = studentViewModels.ToList();
