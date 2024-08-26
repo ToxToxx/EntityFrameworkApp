@@ -196,5 +196,30 @@ namespace EntityFrameworkApp
             AddressState.Text = string.Empty;
             AddressZipCode.Text = string.Empty;
         }
+
+        private void guna2Button6_Click(object sender, EventArgs e)
+        {
+            if (!ValidationStudent())
+            {
+                MessageBox.Show("Personal Data cannot be empty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+            var student = new Student
+            {
+                LastName = LastName.Text,
+                FirstName = FirstName.Text,
+                Patronymic = Patronymic.Text,
+            };
+            var address = new Address
+            {
+                Name = AddressName.Text,
+                City = AddressCity.Text,
+                State = AddressState.Text,
+                ZipCode = AddressZipCode.Text,
+            };
+
+            _studentImplementation.CreateStudentStorage(student, address);
+            LoadStudents();
+        }
     }
 }
