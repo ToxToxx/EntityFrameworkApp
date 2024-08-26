@@ -12,6 +12,6 @@ namespace EntityFrameworkApp.Repositories
         void Update(Student student);
         void Delete(int id);
         void CreateStudentStorage(Student student, Address address);
-
+        IEnumerable<Student> SearchStudents(string searchTerm);
     }
 }
