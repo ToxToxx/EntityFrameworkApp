@@ -59,5 +59,21 @@ namespace EntityFrameworkApp.Implementations
             _context.CreateStudent(student, address);
             _context.SaveChanges();
         }
+
+        public IEnumerable<Student> SearchStudents(string searchTerm)
+        {
+            return _context.Students
+                .Include(s => s.AddressObject)
+                .Where(s => s.LastName.Contains(searchTerm) ||
+                            s.FirstName.Contains(searchTerm) ||
+                            s.Patronymic.Contains(searchTerm) ||
+                            (s.AddressObject != null && (
+                            s.AddressObject.Name.Contains(searchTerm) ||
+                            s.AddressObject.City.Contains(searchTerm) ||
+                            s.AddressObject.State.Contains(searchTerm) ||
+                            s.AddressObject.ZipCode.Contains(searchTerm)
+                            )))
+                .ToList();
+        }
     }
 }
