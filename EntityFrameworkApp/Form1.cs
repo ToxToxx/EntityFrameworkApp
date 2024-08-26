@@ -186,6 +186,12 @@ namespace EntityFrameworkApp
         private void guna2DataGridView1_SelectionChanged(object sender, EventArgs e)
         {
             LastName.Text = string.Empty;
+            FirstName.Text = string.Empty;
+            Patronymic.Text = string.Empty;
+            AddressName.Text = string.Empty;
+            AddressCity.Text = string.Empty;
+            AddressState.Text = string.Empty;
+            AddressZipCode.Text = string.Empty;
         }
     }
 }
