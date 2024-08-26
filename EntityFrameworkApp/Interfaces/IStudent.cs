@@ -11,6 +11,7 @@ namespace EntityFrameworkApp.Repositories
         void Add(Student student);
         void Update(Student student);
         void Delete(int id);
+        void CreateStudentStorage(Student student, Address address);
 
     }
 }
