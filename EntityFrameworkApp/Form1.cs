@@ -4,13 +4,8 @@ using EntityFrameworkApp.Model;
 using EntityFrameworkApp.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EntityFrameworkApp
@@ -142,15 +137,32 @@ namespace EntityFrameworkApp
         {
             if (guna2DataGridView1.SelectedRows.Count > 0)
             {
-                var student = (Student)guna2DataGridView1.SelectedRows[0].DataBoundItem;
-                _studentImplementation.Delete(student.IdStudent);
-                LoadStudents();
+                var selectedRow = guna2DataGridView1.SelectedRows[0];
+                int studentId = (int)selectedRow.Cells["IdStudent"].Value;
+
+                var student = _studentImplementation.GetById(studentId);
+
+                if(student != null)
+                {
+                    if(student.AddressObject != null)
+                    {
+                        _addressImplementation.Delete(student.AddressObject.IdAddress);
+                    }
+                    _studentImplementation.Delete(student.IdStudent);
+
+                    LoadStudents();
+                }
             }
         }
 
         private bool ValidationStudent()
         {
-            return new[] { LastName.Text, FirstName.Text, Patronymic.Text }.All(text => !string.IsNullOrEmpty(text));
+            if(string.IsNullOrEmpty(LastName.Text) || string.IsNullOrEmpty(FirstName.Text) || string.IsNullOrEmpty(Patronymic.Text))
+            {
+                MessageBox.Show("Data cannot be empty", "Notification", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return false;
+            }
+            return true;
         }
     }
 }
